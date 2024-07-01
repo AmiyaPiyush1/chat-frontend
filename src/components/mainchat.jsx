@@ -3,7 +3,7 @@ import socketIOClient from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const socket = socketIOClient('https://socipy-api.vercel.app/');
+const socket = socketIOClient('https://talk-api-kappa.vercel.app/');
 
 const MainChat = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const MainChat = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('https://socipy-api.vercel.app/messages');
+        const response = await axios.get('https://talk-api-kappa.vercel.app/messages');
         
         setMessages(response.data);
       } catch (error) {
@@ -73,7 +73,7 @@ const MainChat = () => {
 
   const send_to_DB = async (message, usernme) => {
     try {
-      await axios.post('https://socipy-api.vercel.app/send_to_DB', { message, usernme });
+      await axios.post('https://talk-api-kappa.vercel.app/send_to_DB', { message, usernme });
     } catch (error) {
       console.error("Something went wrong", error);
     }
