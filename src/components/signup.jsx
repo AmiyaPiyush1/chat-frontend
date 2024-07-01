@@ -27,7 +27,7 @@ const Signup = () => {
       localStorage.setItem('password', password);
       try {
         setLoading(true);
-        const response = await axios.post('http://localhost:3001/user_name', { form, password });
+        const response = await axios.post('https://socipy-api.vercel.app/user_name', { form, password });
         alert("Signup successful, press ok to continue");
         navigate("/chat");
         setLoading(false);

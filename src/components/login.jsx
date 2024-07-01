@@ -28,7 +28,7 @@ const login = () => {
     }
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:3001/login', { form, password });
+      const response = await axios.post('https://socipy-api.vercel.app/login', { form, password });
       if (response.status === 200) {
         localStorage.setItem('user',form)
         setLoading(false)
