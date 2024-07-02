@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import socketIOClient from 'socket.io-client';
+import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const socket = socketIOClient('https://talk-api-kappa.vercel.app/');
+const socket = io('https://talk-api-kappa.vercel.app', {
+  withCredentials: true, // Include credentials
+  extraHeaders: {
+    'Access-Control-Allow-Origin': '*'
+  },
+  transports: ['websocket', 'polling'] // Ensure the correct transports are specified
+});
 
 const MainChat = () => {
   const navigate = useNavigate();
@@ -11,6 +17,7 @@ const MainChat = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
+   
     const fetchMessages = async () => {
       try {
         const response = await axios.get('https://talk-api-kappa.vercel.app/messages');
@@ -22,7 +29,7 @@ const MainChat = () => {
     };
 
     fetchMessages();
-
+    
     if (!localStorage.getItem('user')) {
       navigate("/");
     }
