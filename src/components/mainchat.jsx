@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Ably from 'ably/promises';
 
-const socket = io('https://talk-api-kappa.vercel.app', {
-  withCredentials: true, // Include credentials
-  extraHeaders: {
-    'Access-Control-Allow-Origin': '*'
-  },
-  transports: ['websocket', 'polling'] // Ensure the correct transports are specified
-});
+const ably = new Ably.Realtime.Promise('dbUu3w.02vloA:bTcdxhB1XToibrFU9KvqpjFp1Xyo97TAG-lZAescg_I');
+const channel = ably.channels.get('chat');
 
 const MainChat = () => {
   const navigate = useNavigate();
@@ -17,11 +12,9 @@ const MainChat = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-   
     const fetchMessages = async () => {
       try {
         const response = await axios.get('https://talk-api-kappa.vercel.app/messages');
-        
         setMessages(response.data);
       } catch (error) {
         console.error("Error fetching messages", error);
@@ -29,22 +22,19 @@ const MainChat = () => {
     };
 
     fetchMessages();
-    
+
     if (!localStorage.getItem('user')) {
       navigate("/");
     }
 
-    socket.on('chat', (message) => {
-      
-      setMessages((prevMessages) => [...prevMessages, message]);
+    channel.subscribe('chat', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message.data]);
     });
 
     return () => {
-      socket.off('chat');
+      channel.unsubscribe('chat');
     };
   }, [navigate]);
-
- 
 
   const Name = () => {
     return localStorage.getItem('user');
@@ -90,7 +80,7 @@ const MainChat = () => {
     e.preventDefault();
     if (form.trim()) {
       const message = { message: form, usernme: Name() };
-      socket.emit('chat', message);
+      channel.publish('chat', message);
       setForm('');
       send_to_DB(message.message, message.usernme);
     }
