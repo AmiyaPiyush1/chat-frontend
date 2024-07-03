@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Ably from 'ably/promises';
+import Ably from 'ably';
 
-const ably = new Ably.Realtime.Promise('dbUu3w.02vloA:bTcdxhB1XToibrFU9KvqpjFp1Xyo97TAG-lZAescg_I');
+const ably = new Ably.Realtime('dbUu3w.02vloA:bTcdxhB1XToibrFU9KvqpjFp1Xyo97TAG-lZAescg_I');
 const channel = ably.channels.get('chat');
 
 const MainChat = () => {
